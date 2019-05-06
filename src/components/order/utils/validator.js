@@ -19,3 +19,11 @@ export function contact(value) {
 
   return null;
 }
+
+export function truce(value) {
+  if (value === false)
+    return new Error(
+      "Please confirm you have have received money for this order."
+    );
+  return null;
+}

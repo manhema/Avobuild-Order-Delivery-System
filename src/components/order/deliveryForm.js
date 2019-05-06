@@ -20,11 +20,7 @@ let optionsISO = [
 ];
 
 function DisplayError(props) {
-  return (
-    <small className="" style={{ color: "#ed1c24" }}>
-      {props.message}
-    </small>
-  );
+  return <small style={{ color: "#ed1c24" }}>{props.message}</small>;
 }
 
 export default class DeliveryForm extends Component {
@@ -33,7 +29,8 @@ export default class DeliveryForm extends Component {
     this.state = {
       name: "",
       contact: "",
-      iso: { value: "+263", label: "+263" }
+      iso: { value: "+263", label: "+263" },
+      truce: false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
   }
@@ -44,8 +41,10 @@ export default class DeliveryForm extends Component {
 
   handleInputChange(e) {
     const name = e.target.name;
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
     this.setState({
-      [name]: e.target.value
+      [name]: value
     });
   }
 
@@ -55,14 +54,24 @@ export default class DeliveryForm extends Component {
         ? this.state.contact.substr(1)
         : this.state.contact;
     phone = this.state.iso.value + phone;
+
     this.setState(
       {
         nameError: validator.name(this.state.name),
-        contactError: validator.contact(phone)
+        contactError: validator.contact(phone),
+        truceError: validator.truce(this.state.truce)
       },
       function() {
-        if (!this.state.nameError && !this.state.contactError) {
+        if (
+          !this.state.nameError &&
+          !this.state.contactError &&
+          !(this.props.cash ^ !this.state.truceError) // XOR
+        ) {
           console.log("valid");
+          this.props.view("loading", null);
+          setTimeout(() => {
+            this.props.view("orders", null);
+          }, 3000);
         }
       }
     );
@@ -74,6 +83,7 @@ export default class DeliveryForm extends Component {
   }
 
   render() {
+    let { cash } = this.props;
     return (
       <form onSubmit={this.onSave.bind(this)}>
         <fieldset className="uk-fieldset">
@@ -126,16 +136,23 @@ export default class DeliveryForm extends Component {
             </div>
           </div>
 
-          <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-            <label>
-              <input
-                className="uk-checkbox uk-margin-small-right"
-                type="checkbox"
-                checked
-              />
-              I have received cash from the recepient
-            </label>
-          </div>
+          {cash && (
+            <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+              <label>
+                <input
+                  className="uk-checkbox uk-margin-small-right"
+                  name="truce"
+                  type="checkbox"
+                  value={this.state.truce}
+                  onChange={this.handleInputChange}
+                />
+                I have received money for this order from the recepient
+              </label>
+              {this.state.truceError && (
+                <DisplayError message={this.state.truceError.message} />
+              )}
+            </div>
+          )}
 
           <div className="uk-margin">
             <button className="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom">

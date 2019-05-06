@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import { BackNav } from "../nav/nav.js";
-import { OrderDetailsFooter, Item } from "./util.js";
+import { OrderDetailsFooter, Item } from "./utils/utils.js";
 import DeliveryForm from "./deliveryForm.js";
 
 function Order(props) {
@@ -31,10 +31,7 @@ function Order(props) {
       : "https://s3.us-east-2.amazonaws.com/avobuild/logos/flag-round-250.png";
 
   return (
-    <div
-      className="uk-card uk-card-default uk-card-body uk-clearfix"
-      onClick={(type, payload) => props.view("order", order)}
-    >
+    <div className="uk-card uk-card-default uk-card-body uk-clearfix">
       <div className="uk-margin-small-bottom">
         {cash && (
           <span
@@ -116,7 +113,11 @@ function Order(props) {
           {order.address.city}
         </p>
       </div>
-      <DeliveryForm />
+      <DeliveryForm
+        orderId={order._id}
+        cash={cash}
+        view={(type, payload) => props.view(type, payload)}
+      />
       <div>
         <h6 className="uk-margin-small-bottom">
           Order Details
@@ -140,8 +141,11 @@ function Order(props) {
 export default function OrderComponent(props) {
   return [
     <BackNav key={0} view={(type, payload) => props.view(type, payload)} />,
-    <div key={1} className="" uk-grid>
-      <Order order={props.order} />
+    <div key={1} className="">
+      <Order
+        order={props.order}
+        view={(type, payload) => props.view(type, payload)}
+      />
     </div>
   ];
 }
