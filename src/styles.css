@@ -1,0 +1,26 @@
+html {
+  font-family: ProximaNova, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  font-weight: normal;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  /* background: #fff; */
+  /* color: #666; */
+  -webkit-font-smoothing: antialiased;
+  /* -moz-osx-font-smoothing: grayscale; */
+  text-rendering: optimizeLegibility;
+}
+
+.uk-fixed-navigation {
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  z-index: 1030;
+}
+
+.App {
+  /* font-family: sans-serif; */
+  /* text-align: center; */
+}
