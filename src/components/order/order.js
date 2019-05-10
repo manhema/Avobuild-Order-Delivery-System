@@ -117,6 +117,7 @@ function Order(props) {
         orderId={order._id}
         cash={cash}
         view={(type, payload) => props.view(type, payload)}
+        update={params => props.update(params)}
       />
       <div>
         <h6 className="uk-margin-small-bottom">
@@ -139,12 +140,14 @@ function Order(props) {
 }
 
 export default function OrderComponent(props) {
+  window.scrollTo(0, 0);
   return [
     <BackNav key={0} view={(type, payload) => props.view(type, payload)} />,
     <div key={1} className="">
       <Order
         order={props.order}
         view={(type, payload) => props.view(type, payload)}
+        update={params => props.update(params)}
       />
     </div>
   ];

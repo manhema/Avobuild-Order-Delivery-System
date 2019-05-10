@@ -68,10 +68,12 @@ export default class DeliveryForm extends Component {
           !(this.props.cash ^ !this.state.truceError) // XOR
         ) {
           console.log("valid");
-          this.props.view("loading", null);
-          setTimeout(() => {
-            this.props.view("orders", null);
-          }, 3000);
+          let params = {
+            id: this.props.orderId,
+            name: this.state.name,
+            contact: phone
+          };
+          this.props.update(params);
         }
       }
     );

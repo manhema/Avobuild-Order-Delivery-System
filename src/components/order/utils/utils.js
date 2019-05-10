@@ -113,15 +113,13 @@ export class OrderDetailsFooter extends React.Component {
         <div style={{ fontWeight: "500" }}>
           <span>Total</span>
           {currency !== "ZAR" && ( // Default
-            <span className="uk-float-right">
+            <span className="uk-float-right uk-margin-small-left uk-margin-small-right">
               <b>USD {(subtotal + shipping).toFixed(2)}</b>
             </span>
           )}
           {currency !== "ZAR" && ( // Default
-            <span className="d-block uk-text-right px-1">
-              <b>
-                {currency} {((subtotal + shipping) * rate).toFixed(2)}
-              </b>
+            <span className="d-block uk-float-right">
+              ({currency} {((subtotal + shipping) * rate).toFixed(2)}){" "}
             </span>
           )}
 

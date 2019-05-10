@@ -1,6 +1,6 @@
 import React from "react";
 
-export function MainNav() {
+export function MainNav(props) {
   return (
     <nav
       className="uk-navbar-container"
@@ -24,7 +24,9 @@ export function MainNav() {
       <div className="uk-navbar-right">
         <ul className="uk-navbar-nav">
           <li>
-            <a href="#">History</a>
+            <a href="#" onClick={() => props.sync()}>
+              <span uk-icon="refresh" height="12" /> Sync
+            </a>
           </li>
         </ul>
       </div>
