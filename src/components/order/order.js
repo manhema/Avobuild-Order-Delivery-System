@@ -141,6 +141,7 @@ function Order(props) {
 
 export default function OrderComponent(props) {
   window.scrollTo(0, 0);
+
   return [
     <BackNav key={0} view={(type, payload) => props.view(type, payload)} />,
     <div key={1} className="">

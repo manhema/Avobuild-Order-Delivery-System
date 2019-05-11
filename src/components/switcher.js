@@ -4,6 +4,9 @@ import axios from "axios";
 import Orders from "./orders/orders.js";
 import Order from "./order/order.js";
 
+const uri =
+  "https://order-delivery-rest-api-micro-service-lznirj4v3q-uc.a.run.app";
+
 function Spinner(props) {
   let message = props.type === "orders" ? "fetching orders" : " updating order";
   return (
@@ -18,9 +21,8 @@ function Spinner(props) {
 }
 
 const getOrders = async () => {
-  // code here
   return await axios
-    .get(`http://localhost:8080/orders`)
+    .get(`${uri}/orders`)
     .then(res => {
       return res.data;
     })
@@ -31,7 +33,7 @@ const getOrders = async () => {
 
 const recordDelivery = async params => {
   return await axios
-    .post(`http://localhost:8080/orders/delivery`, params)
+    .post(`${uri}/orders/delivery`, params)
     .then(res => {
       return res.data;
     })
@@ -82,7 +84,7 @@ export default class Switcher extends Component {
   }
 
   async update(params) {
-    console.log(params);
+    let { id } = params;
     await this.setState({
       view: "loading",
       loader: "update"
@@ -90,7 +92,7 @@ export default class Switcher extends Component {
     try {
       await recordDelivery(params);
       const filteredOrders = this.state.orders.filter(function(order) {
-        return order._id !== "5cc030d72958400c99b38aa0";
+        return order._id !== id;
       });
       this.setState(
         {

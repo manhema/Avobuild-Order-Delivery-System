@@ -85,12 +85,6 @@ function Order(props) {
         )}
       </div>
       <div className="uk-text-center">
-        {/* <img
-					className="uk-preserve-width uk-border-circle uk-margin-small-right"
-					src="https://s3.us-east-2.amazonaws.com/avobuild/logos/favicon.png"
-					width="30"
-					alt=""
-				/> */}
         <small>Order #{order._id}</small>
         <br />
         <small>
@@ -117,6 +111,31 @@ function Order(props) {
   );
 }
 
+function NoOrders(props) {
+  return (
+    <div className="uk-text-center uk-margin-top">
+      <span uk-icon="refresh" height="35" />
+      <br />
+      <small className="uk-margin-top">
+        <span role="img" aria-label="Sarcastic Emoji">
+          🙄
+        </span>
+        No orders to deliver yet,
+        <br />
+        press refresh to check for new orders.
+      </small>
+      <br />
+      <br />
+      <button
+        className="uk-button uk-button-primary uk-button-small"
+        onClick={() => props.sync()}
+      >
+        Refresh / Sync
+      </button>
+    </div>
+  );
+}
+
 export default function Orders(props) {
   const orders = props.orders.map((order, i) => (
     <Order key={i} order={order} view={props.view} />
@@ -124,9 +143,10 @@ export default function Orders(props) {
 
   return [
     <MainNav key={0} sync={props.sync} />,
+    orders.length === 0 && <NoOrders key={1} sync={props.sync} />,
     <div
       className="uk-grid uk-grid-small uk-child-width-1-2@s uk-child-width-1-3@m"
-      key={1}
+      key={2}
       style={{ margin: "0.5rem", padding: "0.5rem" }}
     >
       {orders}
