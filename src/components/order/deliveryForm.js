@@ -20,7 +20,9 @@ let optionsISO = [
 ];
 
 function DisplayError(props) {
-  return <small style={{ color: "#ed1c24" }}>{props.message}</small>;
+  return (
+    <small style={{ color: "#ed1c24", width: "100%" }}>{props.message}</small>
+  );
 }
 
 export default class DeliveryForm extends Component {
@@ -33,6 +35,12 @@ export default class DeliveryForm extends Component {
       truce: false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({
+      iso: { value: this.props.iso, label: this.props.iso }
+    });
   }
 
   isoChange(val) {
@@ -157,7 +165,7 @@ export default class DeliveryForm extends Component {
           )}
 
           <div className="uk-margin">
-            <button className="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom">
+            <button className="uk-button uk-button-secondary uk-width-1-1 uk-margin-small-bottom">
               Mark order as Delivered
             </button>
           </div>

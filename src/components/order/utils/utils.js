@@ -20,8 +20,9 @@ export class Item extends Component {
     return [
       <div key={1}>
         <hr
-          className="uk-divider-icon"
-          style={{ margin: 0, display: "block" }}
+          // className="uk-divider-icon"
+          className="uk-margin-small-top uk-margin-small-bottom"
+          style={{ border: "1px dashed #e5e5e5" }}
         />
       </div>,
       <div key={2} className="uk-flex">
