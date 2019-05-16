@@ -1,39 +1,49 @@
-import React, { Component } from "react";
-import PinInput from "react-pin-input";
+import React, { Component, PureComponent } from "react";
 
-export default class App extends React.PureComponent {
+import IdentifierForm from "./utils/identifierForm.js";
+import PINCodeForm from "./utils/pinCodeForm.js";
+
+export default class Authenticate extends PureComponent {
   state = {
-    error: false,
-    value: ""
+    pin: false,
+    payload: null
   };
 
-  onChange = value => {
-    this.setState({ value });
-  };
-
-  onClear = () => {
-    this.setState({
-      error: false,
-      value: ""
+  async viewPin(status, payload) {
+    await this.setState({
+      pin: status,
+      payload: payload
     });
-    this.pin.clear();
-  };
-
-  onComplete = (value, index) => {
-    if (value === "54321") {
-      this.props.login();
-    } else {
-      this.setState({
-        error: true
-      });
-    }
-    console.log(value);
-  };
+  }
 
   render() {
-    const { value } = this.state;
+    let { pin } = this.state;
+    let page = null;
+    switch (pin) {
+      case true:
+        page = (
+          <PINCodeForm
+            payload={this.state.payload}
+            login={this.props.login}
+            viewPin={(pin, payload) => this.viewPin(pin, payload)}
+          />
+        );
+        break;
+
+      case false:
+        page = (
+          <IdentifierForm
+            viewPin={(pin, payload) => this.viewPin(pin, payload)}
+          />
+        );
+        break;
+
+      default:
+        page = null;
+        break;
+    }
     return (
-      <div className="uk-text-center" style={{ marginTop: "6.5rem" }}>
+      <div className="uk-text-center" style={{ marginTop: "5.5rem" }}>
         <div>
           <img
             className=""
@@ -42,37 +52,9 @@ export default class App extends React.PureComponent {
             style={{ height: "10.5em", marginRight: "0.5rem" }}
           />
         </div>
-        <small>
-          Avobuild
-          <br />
-          Delivery & Collections System
-        </small>
+        <small style={{ color: "#333" }}>Last Mile</small>
         <br />
-        <br />
-
-        <PinInput
-          length={5}
-          focus
-          secret
-          ref={p => (this.pin = p)}
-          type="numeric"
-          onChange={this.onChange}
-          onComplete={(value, index) => this.onComplete(value, index)}
-        />
-        {/* <div>{value}</div> */}
-
-        <button
-          className="uk-button uk-button-danger uk-margin"
-          onClick={this.onClear}
-        >
-          Clear
-        </button>
-        <br />
-        {this.state.error && (
-          <small style={{ color: "#ed1c24", width: "100%" }}>
-            invalid username or pin code
-          </small>
-        )}
+        {page}
       </div>
     );
   }
