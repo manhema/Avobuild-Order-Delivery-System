@@ -16,7 +16,7 @@ export function MainNav(props) {
                 alt="Avobuild logo"
                 style={{ height: "3.5em", marginRight: "0.5rem" }}
               />
-              Delivery System
+              Last Mile
             </a>
           </li>
         </ul>
@@ -31,7 +31,7 @@ export function MainNav(props) {
               onClick={(type, payload) => props.view("scan", null)}
             >
               <img
-                src="https://www.scan.me/download/images/qr-code-reader.png"
+                src="https://s3.us-east-2.amazonaws.com/avobuild/utils/qr-code-reader.png"
                 alt="Avobuild logo"
                 style={{
                   height: "3em",
@@ -47,7 +47,7 @@ export function MainNav(props) {
             <a href="#" className="uk-padding-remove-left">
               <img
                 className="uk-border-circle"
-                src="https://s3.us-east-2.amazonaws.com/avobuild/profile-5b2be48df62152462c99596d.jpeg"
+                src={props.authed.image}
                 alt="Avobuild logo"
                 style={{
                   height: "3.5em",
@@ -60,7 +60,7 @@ export function MainNav(props) {
             </a>
             <div className="uk-navbar-dropdown">
               <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li className="uk-nav-header">Hi, Tino</li>
+                <li className="uk-nav-header">Hi, {props.authed.name}</li>
                 <li className="uk-nav-divider" />
                 <li>
                   <a href="#" onClick={() => props.logout()}>

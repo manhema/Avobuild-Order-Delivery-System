@@ -116,7 +116,7 @@ export default class DeliveryForm extends Component {
           </div>
 
           <div className="uk-margin uk-grid uk-grid-small">
-            <div className="uk-width-1-2">
+            <div className="uk-width-1-2" style={{ width: "35%" }}>
               <Select
                 name="form-field-name"
                 //value="one"
@@ -129,7 +129,7 @@ export default class DeliveryForm extends Component {
                 onChange={this.isoChange.bind(this)}
               />
             </div>
-            <div className="uk-width-1-2">
+            <div className="uk-width-1-2" style={{ width: "65%" }}>
               <input
                 className="uk-input"
                 name="contact"
