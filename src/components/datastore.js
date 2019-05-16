@@ -1,10 +1,10 @@
 export let ordersData = [
   {
     _id: "5cc030d72958400c99b38aa0",
-    paid: false,
+    paid: true,
     cash: false,
     currency: "ZAR",
-    status: "ODROS",
+    status: "ODROR",
     userId: "5b2be48df62152462c99596d",
     rate: 14.2,
     products: [
@@ -66,7 +66,7 @@ export let ordersData = [
   },
   {
     _id: "5cae2853906d3700127d591b",
-    paid: true,
+    paid: false,
     status: "ODROS",
     userId: "5b2fbe389b9b053319c73d1e",
     products: [

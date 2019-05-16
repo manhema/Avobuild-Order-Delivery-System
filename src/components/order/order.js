@@ -10,7 +10,7 @@ import {
 
 export function CollectOrder(props) {
   let order = props.order;
-  let { cash, rate, currency } = order;
+  let { cash, rate, currency, paid } = order;
 
   let subtotal = 0;
   let shipping = 8;
@@ -38,7 +38,7 @@ export function CollectOrder(props) {
   return (
     <div className="uk-card uk-card-default uk-card-body uk-clearfix">
       <OrderExp order={order} flag={flag} />
-      <OrderTop cash={cash} flag={flag} />
+      <OrderTop cash={cash} flag={flag} paid={paid} />
       <OrderValue
         currency={currency}
         rate={rate}
@@ -84,7 +84,7 @@ export function CollectOrder(props) {
 
 function Order(props) {
   let order = props.order;
-  let { cash, rate, currency } = order;
+  let { cash, rate, currency, paid } = order;
 
   let subtotal = 0;
   let shipping = 8;
@@ -112,7 +112,7 @@ function Order(props) {
   return (
     <div className="uk-card uk-card-default uk-card-body uk-clearfix">
       <OrderExp order={order} flag={flag} />
-      <OrderTop cash={cash} flag={flag} />
+      <OrderTop cash={cash} flag={flag} paid={paid} />
       <OrderValue
         currency={currency}
         rate={rate}

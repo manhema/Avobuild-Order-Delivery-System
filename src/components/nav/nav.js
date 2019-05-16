@@ -30,14 +30,19 @@ export function MainNav(props) {
               className="uk-padding-remove-left"
               onClick={(type, payload) => props.view("scan", null)}
             >
-              SCAN CODE
+              <img
+                src="https://www.scan.me/download/images/qr-code-reader.png"
+                alt="Avobuild logo"
+                style={{
+                  height: "3em",
+                  width: "3em",
+                  maxWidth: "3.5rem",
+                  objectFit: "contain"
+                }}
+              />
             </a>
           </li>
-          {/* <li>
-            <a href="#" onClick={() => props.sync()}>
-              Sync
-            </a>
-          </li> */}
+
           <li>
             <a href="#" className="uk-padding-remove-left">
               <img
@@ -58,7 +63,7 @@ export function MainNav(props) {
                 <li className="uk-nav-header">Hi, Tino</li>
                 <li className="uk-nav-divider" />
                 <li>
-                  <a href="#">
+                  <a href="#" onClick={() => props.logout()}>
                     Logout{" "}
                     <span className="uk-float-right" data-uk-icon="sign-out" />
                   </a>
@@ -82,7 +87,7 @@ export function BackNav({ view, page }) {
         <ul className="uk-navbar-nav">
           <li>
             <a href="#" onClick={(type, payload) => view(page, null)}>
-              <span uk-icon="arrow-left" style={{ paddingLeft: "1rem" }} />
+              <span uk-icon="arrow-left" />
               Back
             </a>
           </li>

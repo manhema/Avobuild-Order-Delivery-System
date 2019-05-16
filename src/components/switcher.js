@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import QrReader from "react-qr-reader";
+import CryptoJS from "crypto-js";
+
 import UIkit from "uikit";
 
 import { MainNav, BackNav } from "./nav/nav.js";
@@ -9,8 +11,10 @@ import Orders from "./orders/orders.js";
 import Order, { CollectOrder } from "./order/order.js";
 import { ordersData, tradesAnalytics, tradesData } from "./datastore.js";
 
-const uri =
-  "https://order-delivery-rest-api-micro-service-lznirj4v3q-uc.a.run.app";
+// const uri =
+//   "https://order-delivery-rest-api-micro-service-lznirj4v3q-uc.a.run.app";
+
+const uri = "http://localhost:8080";
 
 class Test extends Component {
   state = {
@@ -18,9 +22,16 @@ class Test extends Component {
   };
 
   handleScan = data => {
-    if (data) {
-      data = JSON.parse(data);
-      let { type, orderId, userId } = data;
+    let encryptedQRText = data;
+    if (encryptedQRText) {
+      // Decrypt
+      var bytes = CryptoJS.AES.decrypt(
+        encryptedQRText,
+        "@ secret key 123 avobuild avospace 2016"
+      );
+      var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+
+      let { type, orderId, userId } = decryptedData;
       if (type === "collection") {
         this.props.scanned(orderId, userId);
       }
@@ -92,6 +103,20 @@ const getOrders = async () => {
     });
 };
 
+const getOrder = async args => {
+  return await axios
+    .get(`${uri}/orders/order`, {
+      params: args
+    })
+    .then(res => {
+      console.log(res.data);
+      return res.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+};
+
 const recordDelivery = async params => {
   return await axios
     .post(`${uri}/orders/delivery`, params)
@@ -119,15 +144,22 @@ export default class Switcher extends Component {
   }
 
   async componentDidMount() {
+    // await getOrder({
+    //   id: "5cc030d72958400c99b38aa0",
+    //   userId: "5b2be48df62152462c99596d"
+    // });
+    // this.fetch();
     this.mockFetch();
   }
 
   mockFetch() {
-    this.setState({
-      orders: ordersData,
-      view: "orders",
-      loader: ""
-    });
+    setTimeout(() => {
+      this.setState({
+        orders: ordersData,
+        view: "orders",
+        loader: ""
+      });
+    }, 1000);
   }
 
   async fetch() {
@@ -162,19 +194,20 @@ export default class Switcher extends Component {
       view: "loading",
       loader: "scan"
     });
-
-    var payload = ordersData.find(obj => {
-      return obj._id === orderId;
-    });
-
-    setTimeout(() => {
-      console.log("scanned");
+    try {
+      let order = await getOrder({ id: orderId, userId: ownerId });
       this.setState({
         view: "collection",
         loader: "update",
-        payload: payload
+        payload: order
       });
-    }, 2000);
+    } catch (err) {
+      console.log(err);
+    }
+
+    // var payload = ordersData.find(obj => {
+    //   return obj._id === orderId;
+    // });
   }
 
   // Scanned order is to be Marked as collected for delivery
@@ -293,6 +326,7 @@ export default class Switcher extends Component {
           <MainNav
             key={0}
             view={(type, payload) => this.view(type, payload)}
+            logout={this.props.logout}
           />,
 
           <Orders

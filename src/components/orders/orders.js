@@ -11,7 +11,7 @@ import {
 
 function Order(props) {
   let order = props.order;
-  let { cash, rate, currency } = order;
+  let { cash, rate, currency, paid } = order;
 
   let subtotal = 0;
   let shipping = 8;
@@ -29,13 +29,9 @@ function Order(props) {
       : "https://s3.us-east-2.amazonaws.com/avobuild/logos/flag-round-250.png";
 
   return (
-    <div
-      className="uk-card uk-card-default uk-card-body uk-margin-small-bottom uk-padding-small"
-      // onClick={(type, payload) => props.view("order", order)}
-      // style={{ cursor: "pointer" }}
-    >
-      {/* <OrderExp order={order} flag={flag} /> */}
-      <OrderTop cash={cash} flag={flag} />
+    <div className="uk-card uk-card-default uk-card-body uk-margin-small-bottom uk-padding-small">
+      <OrderExp order={order} flag={flag} />
+      <OrderTop cash={cash} flag={flag} paid={paid} />
       <OrderValue
         currency={currency}
         rate={rate}

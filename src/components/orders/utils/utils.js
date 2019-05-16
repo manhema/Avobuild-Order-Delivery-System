@@ -1,20 +1,26 @@
 import React from "react";
 
-export function OrderTop({ cash, flag }) {
+export function OrderTop({ cash, flag, paid }) {
   return (
     <div className="uk-margin-small-bottom">
-      {cash && (
-        <span className="uk-label uk-label-success uk-margin-small-right">
-          Cash on delivery
+      {!paid && cash && (
+        <span className="uk-label uk-label-warning uk-margin-small-right">
+          To pay cash on delivery
         </span>
       )}
-      {!cash && (
-        <span
-          // className="uk-badge uk-margin-small-right"
-          className="uk-label uk-label-primary uk-margin-small-right"
-          // style={{ color: "#fff" }}
-        >
+      {paid && cash && (
+        <span className="uk-label uk-label-primary uk-margin-small-right">
+          Paid Cash
+        </span>
+      )}
+      {paid && !cash && (
+        <span className="uk-label uk-label-primary uk-margin-small-right">
           Paid online
+        </span>
+      )}
+      {!paid && !cash && (
+        <span className="uk-label uk-label-danger uk-margin-small-right">
+          Not Confirmed
         </span>
       )}
       <img
@@ -147,50 +153,28 @@ export function OrderExp({ order, flag }) {
   let { paid } = order;
   return (
     <article className="uk-comment uk-margin-bottom">
-      <header className="uk-comment-header uk-grid-medium uk-flex-middle uk-grid">
-        <div className="uk-width-auto">
-          <img
-            className="uk-comment-avatar uk-border-circle"
-            src={order.owner.image}
-            style={{ height: "3.5em", width: "3.5rem", objectFit: "cover" }}
-            alt=""
-          />
-        </div>
-        <div className="uk-width-expand">
-          <h4 className="uk-comment-title uk-margin-remove">
-            <a className="uk-link-reset" href="#">
-              {order.owner.name}
-            </a>
+      <div className="uk-margin-small">
+        {paid && (
+          <span className="uk-label uk-label-success" style={{ color: "#fff" }}>
+            Paid
+          </span>
+        )}
+        {!paid && (
+          <span className="uk-label uk-label-danger" style={{ color: "#fff" }}>
+            Unpaid
+          </span>
+        )}
+        <img
+          className="uk-float-right uk-preserve-width uk-border-circle"
+          src={flag}
+          width="12"
+          alt="..."
+          style={{
+            borderRadius: "50%"
+          }}
+        />
+      </div>
 
-            <img
-              className="uk-float-right uk-preserve-width uk-border-circle"
-              src={flag}
-              width="12"
-              alt=""
-            />
-          </h4>
-          <ul className="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
-            <li>
-              {paid && (
-                <span
-                  className="uk-label uk-label-success"
-                  style={{ color: "#fff" }}
-                >
-                  Paid
-                </span>
-              )}
-              {!paid && (
-                <span
-                  className="uk-label uk-label-danger"
-                  style={{ color: "#fff" }}
-                >
-                  Unpaid
-                </span>
-              )}
-            </li>
-          </ul>
-        </div>
-      </header>
       <div className="uk-comment-body">
         <ProductSlider products={order.products} />
       </div>
