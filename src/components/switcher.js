@@ -11,10 +11,10 @@ import Orders from "./orders/orders.js";
 import Order, { CollectOrder } from "./order/order.js";
 import { ordersData, tradesAnalytics, tradesData } from "./datastore.js";
 
-// const uri =
-//   "https://order-delivery-rest-api-micro-service-lznirj4v3q-uc.a.run.app";
+const uri =
+  "https://order-delivery-rest-api-micro-service-lznirj4v3q-uc.a.run.app";
 
-const uri = "http://localhost:8080";
+// const uri = "http://localhost:8080";
 
 class Test extends Component {
   state = {
@@ -92,9 +92,11 @@ function Spinner(props) {
   );
 }
 
-const getOrders = async () => {
+const getOrders = async args => {
   return await axios
-    .get(`${uri}/orders`)
+    .get(`${uri}/orders`, {
+      params: args
+    })
     .then(res => {
       return res.data;
     })
@@ -105,7 +107,7 @@ const getOrders = async () => {
 
 const getOrder = async args => {
   return await axios
-    .get(`${uri}/orders/order`, {
+    .get(`${uri}/order/scan`, {
       params: args
     })
     .then(res => {
@@ -119,7 +121,18 @@ const getOrder = async args => {
 
 const recordDelivery = async params => {
   return await axios
-    .post(`${uri}/orders/delivery`, params)
+    .post(`${uri}/order/deliver`, params)
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+};
+
+const recordCollection = async params => {
+  return await axios
+    .post(`${uri}/order/collect`, params)
     .then(res => {
       return res.data;
     })
@@ -148,8 +161,8 @@ export default class Switcher extends Component {
     //   id: "5cc030d72958400c99b38aa0",
     //   userId: "5b2be48df62152462c99596d"
     // });
-    // this.fetch();
-    this.mockFetch();
+    this.fetch();
+    // this.mockFetch();
   }
 
   mockFetch() {
@@ -159,19 +172,19 @@ export default class Switcher extends Component {
         view: "orders",
         loader: ""
       });
-    }, 1000);
+    }, 500);
   }
 
   async fetch() {
     try {
       this.setState(
         {
-          orders: await getOrders()
+          orders: await getOrders({ partnerId: this.props.authed.tokenID })
         },
         () => {
           this.setState({
             view: "orders",
-            loader: "delivered"
+            loader: ""
           });
         }
       );
@@ -196,72 +209,127 @@ export default class Switcher extends Component {
     });
     try {
       let order = await getOrder({ id: orderId, userId: ownerId });
+      // var order = ordersData.find(obj => {
+      //   return obj._id === orderId;
+      // });
       this.setState({
         view: "collection",
         loader: "update",
         payload: order
       });
     } catch (err) {
+      this.setState({
+        view: "scan",
+        loader: ""
+      });
+      UIkit.notification({
+        message: "<small>This order has already be collected.</small>",
+        pos: "bottom-right",
+        timeout: 3500
+      });
       console.log(err);
     }
-
-    // var payload = ordersData.find(obj => {
-    //   return obj._id === orderId;
-    // });
   }
 
   // Scanned order is to be Marked as collected for delivery
-  collect(params) {
+  async collect(orderId) {
+    let params = {
+      id: orderId,
+      partnerId: this.props.authed.tokenID
+    };
+
     let { orders, payload } = this.state;
     this.setState({
       view: "loading",
       loader: "update"
     });
-    setTimeout(() => {
+
+    try {
+      // await recordDelivery(params);
+      let result = await recordCollection(params);
+      if (result.collected) {
+        this.setState({
+          view: "orders",
+          loader: "",
+          orders: [...orders, payload]
+        });
+        UIkit.notification({
+          message: "<small>Order added to orders for delivery.</small>",
+          pos: "bottom-right",
+          timeout: 3500
+        });
+      } else {
+        this.setState({
+          view: "collection",
+          loader: ""
+        });
+        UIkit.notification({
+          message: `<small>${result.message}.</small>`,
+          pos: "bottom-right",
+          timeout: 3500
+        });
+      }
+    } catch (err) {
       this.setState({
-        view: "orders",
-        loader: "",
-        orders: [...orders, payload]
+        view: "collection",
+        loader: ""
       });
-      UIkit.notification({
-        message: "<small>Order added to orders for delivery.</small>",
-        pos: "bottom-right",
-        timeout: 3500
-      });
-    }, 2000);
+    }
   }
 
-  async update(params) {
-    let { id } = params;
+  async deliver(args) {
+    let { id, name, contact } = args;
+    let params = {
+      id: id,
+      partnerId: this.props.authed.tokenID,
+      name: name,
+      contact: contact
+    };
+
     await this.setState({
       view: "loading",
       loader: "update"
     });
     try {
-      // await recordDelivery(params);
-      await morckRecordDelivery(params);
-      console.log("done waiting");
-      const filteredOrders = this.state.orders.filter(function(order) {
-        return order._id !== id;
-      });
-      this.setState(
-        {
-          orders: filteredOrders
-        },
-        () => {
-          this.setState({
-            view: "orders",
-            loader: "delivered"
-          });
-          UIkit.notification({
-            message: "<small>Order has been delivered to receipient.</small>",
-            pos: "bottom-right",
-            timeout: 3500
-          });
-        }
-      );
+      let result = await recordDelivery(params);
+      if (result.delivered) {
+        const filteredOrders = this.state.orders.filter(function(order) {
+          return order._id !== id;
+        });
+        this.setState(
+          {
+            orders: filteredOrders
+          },
+          () => {
+            this.setState({
+              view: "orders",
+              loader: "delivered"
+            });
+            UIkit.notification({
+              message: "<small>Order has been delivered to receipient.</small>",
+              pos: "bottom-right",
+              timeout: 3500
+            });
+          }
+        );
+      } else {
+        this.setState({
+          view: "order",
+          loader: ""
+        });
+        UIkit.notification({
+          message: `<small>${result.message}.</small>`,
+          pos: "bottom-right",
+          timeout: 3500
+        });
+      }
+      // await morckRecordDelivery(params);
     } catch (err) {
-      console.log(err.response);
+      this.setState({
+        view: "order",
+        loader: ""
+      });
+      // console.log(err.response);
     }
   }
 
@@ -287,7 +355,7 @@ export default class Switcher extends Component {
             key={1}
             view={(type, payload) => this.view(type, payload)}
             order={this.state.payload}
-            update={params => this.update(params)}
+            update={params => this.deliver(params)}
           />
         ];
 
@@ -302,7 +370,7 @@ export default class Switcher extends Component {
             key={1}
             view={(type, payload) => this.view(type, payload)}
             order={this.state.payload}
-            collect={params => this.collect(params)}
+            collect={orderId => this.collect(orderId)}
           />
         ];
 
@@ -327,6 +395,7 @@ export default class Switcher extends Component {
             key={0}
             view={(type, payload) => this.view(type, payload)}
             logout={this.props.logout}
+            authed={this.props.authed}
           />,
 
           <Orders

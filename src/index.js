@@ -7,25 +7,28 @@ import "./styles.css";
 
 class RenderPage extends React.PureComponent {
   state = {
-    isLoggedIn: true
+    isLoggedIn: false,
+    payload: null
   };
 
-  login = () => {
-    this.setState({
-      isLoggedIn: true
+  login = async payload => {
+    await this.setState({
+      isLoggedIn: true,
+      payload: payload
     });
   };
 
   logout = () => {
     this.setState({
-      isLoggedIn: false
+      isLoggedIn: false,
+      payload: null
     });
   };
 
   render() {
     switch (this.state.isLoggedIn) {
       case true:
-        return <Switcher logout={this.logout} />;
+        return <Switcher logout={this.logout} authed={this.state.payload} />;
 
       case false:
       default:

@@ -50,7 +50,7 @@ export function CollectOrder(props) {
       <div className="uk-margin-top">
         <button
           className="uk-button uk-button-secondary uk-width-1-1 uk-margin-bottom"
-          onClick={params => props.collect({ orderId: order._id })}
+          onClick={orderId => props.collect(order._id)}
         >
           Collect Order For Delivery
         </button>

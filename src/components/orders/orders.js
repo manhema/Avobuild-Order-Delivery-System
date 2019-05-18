@@ -56,7 +56,7 @@ function OrdersHeader() {
         <h3 className="uk-card-title uk-margin-remove">
           Orders to deliver <span data-uk-icon="cart" />
         </h3>
-        <p>Orders be delivered to receipients.</p>
+        <p>Orders to be delivered to receipients.</p>
       </div>
     </div>
   );

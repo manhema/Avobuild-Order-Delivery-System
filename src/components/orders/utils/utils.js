@@ -193,7 +193,7 @@ export function NoOrders(props) {
         </span>
         No more orders to deliver for now,
         <br />
-        scan qr code to collect new orders to deliver
+        scan qr code to collect a new order to deliver
       </small>
       <br />
       <br />
