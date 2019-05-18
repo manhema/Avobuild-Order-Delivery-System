@@ -107,7 +107,7 @@ const getOrders = async args => {
 
 const getOrder = async args => {
   return await axios
-    .get(`${uri}/order`, {
+    .get(`${uri}/order/scan`, {
       params: args
     })
     .then(res => {
