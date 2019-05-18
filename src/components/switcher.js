@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
 import QrReader from "react-qr-reader";
 import CryptoJS from "crypto-js";
 
@@ -10,11 +9,12 @@ import { MainNav, BackNav } from "./nav/nav.js";
 import Orders from "./orders/orders.js";
 import Order, { CollectOrder } from "./order/order.js";
 import { ordersData, tradesAnalytics, tradesData } from "./datastore.js";
-
-const uri =
-  "https://order-delivery-rest-api-micro-service-lznirj4v3q-uc.a.run.app";
-
-// const uri = "http://localhost:8080";
+import {
+  getOrders,
+  getOrder,
+  recordDelivery,
+  recordCollection
+} from "./utils/api.js";
 
 class Test extends Component {
   state = {
@@ -92,55 +92,6 @@ function Spinner(props) {
   );
 }
 
-const getOrders = async args => {
-  return await axios
-    .get(`${uri}/orders`, {
-      params: args
-    })
-    .then(res => {
-      return res.data;
-    })
-    .catch(error => {
-      throw Object({ success: false, message: error.response });
-    });
-};
-
-const getOrder = async args => {
-  return await axios
-    .get(`${uri}/order/scan`, {
-      params: args
-    })
-    .then(res => {
-      console.log(res.data);
-      return res.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-};
-
-const recordDelivery = async params => {
-  return await axios
-    .post(`${uri}/order/deliver`, params)
-    .then(res => {
-      return res.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-};
-
-const recordCollection = async params => {
-  return await axios
-    .post(`${uri}/order/collect`, params)
-    .then(res => {
-      return res.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-};
-
 const morckRecordDelivery = async params => {
   return new Promise(resolve => setTimeout(resolve, 2000));
 };
@@ -156,13 +107,8 @@ export default class Switcher extends Component {
     };
   }
 
-  async componentDidMount() {
-    // await getOrder({
-    //   id: "5cc030d72958400c99b38aa0",
-    //   userId: "5b2be48df62152462c99596d"
-    // });
+  componentDidMount() {
     this.fetch();
-    // this.mockFetch();
   }
 
   mockFetch() {
@@ -339,6 +285,7 @@ export default class Switcher extends Component {
       payload: payload
     });
   }
+
   render() {
     switch (this.state.view) {
       case "loading":
